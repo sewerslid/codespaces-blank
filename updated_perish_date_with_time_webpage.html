@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Fate</title>
+<link href="https://fonts.googleapis.com/css2?family=Texturina:wght@700&display=swap" rel="stylesheet">
+<style>
+  body {
+    background-color: black;
+    color: red;
+    font-family: 'Texturina', serif;
+    font-size: 32px;
+    text-align: center;
+    margin-top: 20%;
+  }
+  .date {
+    font-size: 48px;
+    color: white; /* Font color for date */
+  }
+  .time {
+    font-size: 36px;
+    color: white; /* Font color for time */
+  }
+</style>
+</head>
+<body>
+  <div id="message">YOU WILL PERISH ON:</div>
+  <div id="date" class="date"></div>
+  <div id="time" class="time"></div>
+
+<script>
+// Check if the user already has a date and time
+if (!localStorage.getItem('perishDateTime')) {
+  // Generate a new date and time two days in the future
+  const today = new Date();
+  const perishDateTime = new Date(today.setDate(today.getDate() + 2));
+  
+  // Store the date and time in localStorage so the date can't be changed
+  localStorage.setItem('perishDateTime', perishDateTime);
+}
+
+// Function to update time every second
+function updateTime() {
+  const perishDateTime = new Date(localStorage.getItem('perishDateTime'));
+  const now = new Date();
+
+  // Adjust seconds and milliseconds to change on refresh
+  perishDateTime.setSeconds(perishDateTime.getSeconds() + (now.getSeconds() % 2 === 0 ? 1 : -1));
+  perishDateTime.setMilliseconds(perishDateTime.getMilliseconds() + (now.getMilliseconds() % 2 === 0 ? 1 : -1));
+
+  // Display the date and time
+  const dateString = perishDateTime.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const timeString = perishDateTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+  document.getElementById('date').innerText = dateString;
+  document.getElementById('time').innerText = timeString;
+
+  // Update time in the browser without changing the date
+  setTimeout(updateTime, 1000);
+}
+
+// Initialize the time update function
+updateTime();
+</script>
+</body>
+</html>
